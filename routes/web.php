@@ -12,5 +12,6 @@
 */
 
 Route::get('/', function () {
+    \Log::debug('Test debug message');
     return view('welcome');
 });
