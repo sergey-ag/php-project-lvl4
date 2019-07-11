@@ -11,7 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    \Log::debug('Test debug message');
-    return view('welcome');
-});
+Auth::routes(['reset' => false]);
+
+Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/users', 'UserController@index')->name('users.index');
+
+Route::get('/users/edit', 'UserController@edit')->name('users.edit');
+
+Route::put('/users', 'UserController@update')->name('users.update');
+
+Route::delete('/users', 'UserController@destroy')->name('users.destroy');

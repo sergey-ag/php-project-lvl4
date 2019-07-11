@@ -43,7 +43,7 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily'],
+            'channels' => ['rollbar', 'daily'],
             'ignore_exceptions' => false,
         ],
 
