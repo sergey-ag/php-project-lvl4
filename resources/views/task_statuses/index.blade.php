@@ -8,29 +8,28 @@
     </div>
     @endif
     
-    <h1>{{ __('Users') }}</h1>
+    <h1>{{ __('Task statuses') }}</h1>
+    <div class="btn-group my-3" role="group" aria-label="Control buttons">
+        <a href="{{ route('task_statuses.create') }}" class="btn btn-outline-secondary" role="button" aria-pressed="true">New</a>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">{{ __('Name') }}</th>
-                <th scope="col">{{ __('Email') }}</th>
-                <th scope="col">{{ __('Registered at') }}</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($users as $user)
+            @forelse ($taskStatuses as $taskStatus)
             <tr>
                 <th scope="row">{{ $initIteration + $loop->iteration }}</th>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->created_at }}</td>
+                <td><a href="{{ route('task_statuses.edit', ['id' => $taskStatus->id]) }}">{{ $taskStatus->name }}</a></td>
             </tr>
             @empty
                 <p>{{ __('No records') }}</p>
             @endforelse
         </tbody>
     </table>
-    {{ $users->links() }}
+    {{ $taskStatuses->links() }}
 </div>
 @endsection

@@ -63,7 +63,7 @@ class UserController extends Controller
 
         auth()->user()->save();
 
-        return redirect()->route('home')->with('status', 'Your account has been updated');
+        return redirect()->route('home')->with('status', __('Your account has been updated'));
     }
 
     /**
