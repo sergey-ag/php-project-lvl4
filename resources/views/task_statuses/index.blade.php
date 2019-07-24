@@ -2,15 +2,11 @@
 
 @section('content')
 <div class="container">
-    @if (session('status'))
-    <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-    </div>
-    @endif
+    @include('partials.flash')
     
     <h1>{{ __('Task statuses') }}</h1>
     <div class="btn-group my-3" role="group" aria-label="Control buttons">
-        <a href="{{ route('task_statuses.create') }}" class="btn btn-outline-secondary" role="button" aria-pressed="true">New</a>
+        <a href="{{ route('task_statuses.create') }}" class="btn btn-outline-secondary" role="button" aria-pressed="true">{{ __('Create status') }}</a>
     </div>
     <table class="table table-striped">
         <thead>

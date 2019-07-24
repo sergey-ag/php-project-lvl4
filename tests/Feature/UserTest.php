@@ -10,19 +10,9 @@ use Illuminate\Support\Facades\Hash;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
-
-    private $usersTestSet;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->usersTestSet = factory(User::class, 3)->create();
-    }
-
     public function testGetUsersIndex()
     {
-        $response = $this->actingAs($this->usersTestSet->first())
+        $this->actingAs($this->usersTestSet->first())
             ->get('/users')
             ->assertOk();
         $this->assertDatabaseHas('users', ['name' => $this->usersTestSet->first()->name]);
@@ -30,22 +20,23 @@ class UserTest extends TestCase
 
     public function testGetUsersEdit()
     {
-        $response = $this->actingAs($this->usersTestSet->first())->get('/users/edit');
-        $response->assertOk();
+        $this->actingAs($this->usersTestSet->first())
+            ->get('/users/edit')
+            ->assertOk();
     }
 
     public function testPutUsers()
     {
-        $response = $this->actingAs($this->usersTestSet->first())
+        $this->actingAs($this->usersTestSet->first())
             ->from('/users/edit')
             ->put('/users', ['name' => 'Marty McFly', 'password' => null])
             ->assertRedirect('/');
         $this->assertDatabaseHas('users', ['name' => 'Marty McFly']);
     }
 
-    public function testPutUsers2()
+    public function testPutUsersChangePassword()
     {
-        $response = $this->actingAs($this->usersTestSet->first())
+        $this->actingAs($this->usersTestSet->first())
             ->put('/users', [
                 'name' => 'Emmet Brown',
                 'password' => 'newpassword',
@@ -57,9 +48,9 @@ class UserTest extends TestCase
         ]);
     }
 
-    public function testPutUsers3()
+    public function testPutUsersValidationFail()
     {
-        $response = $this->actingAs($this->usersTestSet->first())
+        $this->actingAs($this->usersTestSet->first())
             ->from('/users/edit')
             ->put('/users', ['name' => null, 'password' => null])
             ->assertRedirect('/users/edit');
@@ -67,8 +58,22 @@ class UserTest extends TestCase
 
     public function testDeleteUsers()
     {
-        $response = $this->actingAs($this->usersTestSet->first())
+        User::find($this->usersTestSet->last()->id)->tasks
+            ->each(function ($task, $key) {
+                $task->delete();
+            });
+
+        $this->actingAs($this->usersTestSet->last())
             ->delete('/users');
-        $this->assertDatabaseMissing('users', ['name' => $this->usersTestSet->first()->name]);
+        $this->assertDatabaseMissing('users', ['name' => $this->usersTestSet->last()->name]);
+    }
+
+    public function testDeleteUsersFail()
+    {
+        $this->actingAs($this->usersTestSet->first())
+            ->from('/users/edit')
+            ->delete('/users')
+            ->assertRedirect('/users/edit');
+        $this->assertDatabaseHas('users', ['name' => $this->usersTestSet->first()->name]);
     }
 }

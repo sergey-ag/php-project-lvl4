@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container">
+    @include('partials.flash')
+    
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -29,7 +31,7 @@
                         <div class="form-group row mb-0 justify-content-between">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Save') }}
+                                    {{ __('Save changes') }}
                                 </button>
                                 <a href="{{ route('task_statuses.destroy', ['id' => $taskStatus->id]) }}" class="btn btn-danger" data-method="delete">
                                     {{ __('Delete') }}

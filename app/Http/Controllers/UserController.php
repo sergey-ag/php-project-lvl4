@@ -63,7 +63,7 @@ class UserController extends Controller
 
         auth()->user()->save();
 
-        return redirect()->route('home')->with('status', __('Your account has been updated'));
+        return redirect()->route('home')->with('success', __('Your account has been updated'));
     }
 
     /**
@@ -75,6 +75,11 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $user = auth()->user();
+        
+        if (!$user->createdTasks->isEmpty() || !$user->tasks->isEmpty()) {
+            return back()->with('danger', __('Your account cannot be deleted. Remove dependencies first!'));
+        }
+
         auth()->guard()->logout();
         $request->session()->invalidate();
         $user->delete();

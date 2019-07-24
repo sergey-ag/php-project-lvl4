@@ -3,6 +3,7 @@
 namespace Craftworks\TaskManager\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Craftworks\TaskManager\Task;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $myTasks = auth()->user()->tasks;
+        return view('home', ['myTasks' => $myTasks]);
     }
 }

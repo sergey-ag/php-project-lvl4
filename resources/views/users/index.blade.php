@@ -2,12 +2,8 @@
 
 @section('content')
 <div class="container">
-    @if (session('status'))
-    <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-    </div>
-    @endif
-    
+    @include('partials.flash')
+
     <h1>{{ __('Users') }}</h1>
     <table class="table table-striped">
         <thead>

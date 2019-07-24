@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class TaskStatusController extends Controller
 {
-     /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -55,7 +55,7 @@ class TaskStatusController extends Controller
 
         TaskStatus::create($data);
 
-        return redirect()->route('task_statuses.index')->with('status', __('Task status has been created!'));
+        return redirect()->route('task_statuses.index')->with('success', __('The task status has been created!'));
     }
 
     /**
@@ -85,7 +85,7 @@ class TaskStatusController extends Controller
         $taskStatus->name = $data['name'];
         $taskStatus->save();
 
-        return redirect()->route('task_statuses.index')->with('status', __('Task status has been updated!'));
+        return redirect()->route('task_statuses.index')->with('success', __('The task status has been updated!'));
     }
 
     /**
@@ -96,8 +96,12 @@ class TaskStatusController extends Controller
      */
     public function destroy(TaskStatus $taskStatus)
     {
+        if (!$taskStatus->tasks->isEmpty()) {
+            return back()->with('danger', __('The task status cannot be deleted. Remove dependencies first!'));
+        }
+        
         $taskStatus->delete();
 
-        return redirect()->route('task_statuses.index')->with('status', __('Task status has been deleted'));
+        return redirect()->route('task_statuses.index')->with('success', __('The task status has been deleted'));
     }
 }
