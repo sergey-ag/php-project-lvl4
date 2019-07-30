@@ -32,10 +32,12 @@ class TaskTest extends TestCase
                 'description' => 'Some text description...',
                 'status_id' => $this->taskStatusesTestSet->first()->id,
                 'creator_id' => $this->usersTestSet->first()->id,
+                'tags' => 'tag1, tag2',
                 'assigned_to_id' => $this->usersTestSet->last()->id
             ])
             ->assertRedirect('/tasks');
         $this->assertDataBaseHas('tasks', ['name' => 'NewTask']);
+        $this->assertDataBaseHas('tags', ['name' => 'tag1']);
     }
 
     public function testPostTasksStoreValidationFail()
@@ -67,11 +69,13 @@ class TaskTest extends TestCase
                 'name' => 'UpdatedTaskName',
                 'description' => 'Updated Text Descriptio...',
                 'status_id' => $this->taskStatusesTestSet->first()->id,
+                'tags' => 'tag3',
                 'creator_id' => $this->usersTestSet->first()->id,
                 'assigned_to_id' => $this->usersTestSet->last()->id
             ])
             ->assertRedirect('/tasks');
         $this->assertDatabaseHas('tasks', ['name' => 'UpdatedTaskName']);
+        $this->assertDataBaseHas('tags', ['name' => 'tag3']);
     }
 
     public function testPutTasksValidationFail()
@@ -80,7 +84,7 @@ class TaskTest extends TestCase
             ->from("/tasks/{$this->tasksTestSet[0]->id}/edit")
             ->put("/tasks/{$this->tasksTestSet[0]->id}", [
                 'name' => null,
-                'description' => 'Updated Text Descriptio...',
+                'description' => 'Updated Text Description...',
                 'status_id' => $this->taskStatusesTestSet->first()->id,
                 'creator_id' => $this->usersTestSet->first()->id,
                 'assigned_to_id' => $this->usersTestSet->last()->id

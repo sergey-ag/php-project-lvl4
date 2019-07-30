@@ -39,6 +39,13 @@
                     </div>
 
                     <div class="row">
+                        <span class="col-md-4 text-md-right"><strong>{{ __('Tags') }}</strong></span>
+                        <div class="col-md-6">
+                            <span>{{ $task->getTagsAsString() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <span class="col-md-4 text-md-right"><strong>{{ __('Created at') }}</strong></span>
                         <div class="col-md-6">
                             <span>{{ $task->created_at }}</span>

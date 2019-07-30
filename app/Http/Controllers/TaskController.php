@@ -6,6 +6,9 @@ use Craftworks\TaskManager\Task;
 use Illuminate\Http\Request;
 use Craftworks\TaskManager\TaskStatus;
 use Craftworks\TaskManager\User;
+use Craftworks\TaskManager\Tag;
+
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -53,6 +56,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => [],
@@ -61,8 +65,9 @@ class TaskController extends Controller
         ]);
 
         $data['creator_id'] = auth()->user()->id;
+        $tags = Tag::getIds($request->tags);
 
-        Task::create($data);
+        Task::create($data)->tags()->sync($tags);
 
         return redirect()->route('tasks.index')->with('success', __('The task has been created!'));
     }
@@ -111,10 +116,13 @@ class TaskController extends Controller
             'assigned_to_id' => ['nullable', 'exists:users,id']
         ]);
 
+        $tags = Tag::getIds($request->tags);
+
         $task->name = $data['name'];
         $task->description = $data['description'];
         $task->status_id = $data['status_id'];
         $task->assigned_to_id = $data['assigned_to_id'];
+        $task->tags()->sync($tags);
 
         $task->save();
 
@@ -129,6 +137,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $task->tags()->detach();
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', __('The task has been deleted'));

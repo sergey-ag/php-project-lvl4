@@ -69,6 +69,7 @@ class TaskStatusTest extends TestCase
     {
         TaskStatus::find($this->taskStatusesTestSet->first()->id)->tasks
             ->each(function ($task, $key) {
+                $task->tags()->detach();
                 $task->delete();
             });
 
