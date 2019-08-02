@@ -56,7 +56,9 @@ class Task extends Model
             })
             ->when($filter['userFilter'], function ($query, $filter) {
                 return $query->where(function ($query) use ($filter) {
-                    return $query->whereIn('assigned_to_id', $filter)
+                    return $query->whereIn('assigned_to_id', array_filter($filter, function ($item) {
+                        return $item !== 'null';
+                    }))
                         ->when(in_array('null', $filter), function ($query) {
                             return $query->orWhereNull('assigned_to_id');
                         });
