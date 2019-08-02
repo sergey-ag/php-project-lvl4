@@ -8,8 +8,6 @@ use Craftworks\TaskManager\TaskStatus;
 use Craftworks\TaskManager\User;
 use Craftworks\TaskManager\Tag;
 
-use Illuminate\Support\Facades\DB;
-
 class TaskController extends Controller
 {
     /**
@@ -27,10 +25,28 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::with('status', 'creator', 'assignedTo')->paginate(10);
-        return view('tasks.index', ['tasks' => $tasks]);
+        $filter = [
+            'statusFilter' => $request->input('statusFilter') ?? [],
+            'tagFilter' => $request->input('tagFilter') ?? [],
+            'userFilter' => $request->input('userFilter') ?? []
+        ];
+        
+        $tasks = Task::getFiltered($filter)->paginate(10);
+        $users = User::orderBy('name')->get();
+        $statuses = TaskStatus::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
+        
+        return view('tasks.index', [
+            'users' => $users,
+            'statuses' => $statuses,
+            'tags' => $tags,
+            'tasks' => $tasks,
+            'statusFilter' => $filter['statusFilter'],
+            'userFilter' => $filter['userFilter'],
+            'tagFilter' => $filter['tagFilter']
+        ]);
     }
 
     /**

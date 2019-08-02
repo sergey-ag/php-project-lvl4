@@ -42,4 +42,25 @@ class Task extends Model
             ->toArray();
         return implode(', ', $tagNames);
     }
+
+    public static function getFiltered($filter)
+    {
+        return self::with('status', 'creator', 'assignedTo')
+            ->when($filter['statusFilter'], function ($query, $filter) {
+                return $query->whereIn('status_id', $filter);
+            })
+            ->when($filter['tagFilter'], function ($query, $filter) {
+                return $query->whereHas('tags', function ($query) use ($filter) {
+                    return $query->whereIn('tag_id', $filter);
+                });
+            })
+            ->when($filter['userFilter'], function ($query, $filter) {
+                return $query->where(function ($query) use ($filter) {
+                    return $query->whereIn('assigned_to_id', $filter)
+                        ->when(in_array('null', $filter), function ($query) {
+                            return $query->orWhereNull('assigned_to_id');
+                        });
+                });
+            });
+    }
 }

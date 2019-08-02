@@ -16,6 +16,13 @@ class TaskTest extends TestCase
         $this->assertDatabaseHas('tasks', ['name' => $this->tasksTestSet[0]->name]);
     }
 
+    public function testGetTasksIndexWithFilter()
+    {
+        $this->actingAs($this->usersTestSet->first())
+            ->get("/tasks?statusFilter[]={$this->taskStatusesTestSet->first()->id}")
+            ->assertOk();
+    }
+
     public function testGetTasksCreate()
     {
         $this->actingAs($this->usersTestSet->first())
