@@ -34,8 +34,12 @@ class TaskController extends Controller
         ];
         
         $tasks = Task::getFiltered($filter)->paginate(10);
-        $users = User::orderBy('name')->get();
-        $statuses = TaskStatus::orderBy('name')->get();
+        $users = User::orderBy('name')
+            ->withTrashed()
+            ->get();
+        $statuses = TaskStatus::orderBy('name')
+            ->withTrashed()
+            ->get();
         $tags = Tag::orderBy('name')->get();
         
         return view('tasks.index', [

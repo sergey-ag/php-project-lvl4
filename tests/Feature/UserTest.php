@@ -70,24 +70,8 @@ class UserTest extends TestCase
     {
         $user = $this->usersTestSet->last();
         
-        User::find($user->id)->tasks
-            ->each(function ($task, $key) {
-                $task->delete();
-            });
-
         $this->actingAs($user)
             ->delete("/users/{$user->id}");
-        $this->assertDatabaseMissing('users', ['name' => $user->name]);
-    }
-
-    public function testDeleteUsersFail()
-    {
-        $user = $this->usersTestSet->first();
-
-        $this->actingAs($user)
-            ->from("/users/{$user->id}/edit")
-            ->delete("/users/{$user->id}")
-            ->assertRedirect("/users/{$user->id}/edit");
-        $this->assertDatabaseHas('users', ['name' => $user->name]);
+        $this->assertSOftDeleted('users', ['name' => $user->name]);
     }
 }

@@ -76,10 +76,6 @@ class UserController extends Controller
     {
         $user = auth()->user();
         
-        if (!$user->createdTasks->isEmpty() || !$user->tasks->isEmpty()) {
-            return back()->with('danger', __('Your account cannot be deleted. Remove dependencies first!'));
-        }
-
         auth()->guard()->logout();
         $request->session()->invalidate();
         $user->delete();

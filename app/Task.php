@@ -45,7 +45,17 @@ class Task extends Model
 
     public static function getFilteredMultiple($filter)
     {
-        return self::with('status', 'creator', 'assignedTo')
+        return self::with([
+                'status' => function ($query) {
+                    return $query->withTrashed();
+                },
+                'creator' => function ($query) {
+                    return $query->withTrashed();
+                },
+                'assignedTo' => function ($query) {
+                    return $query->withTrashed();
+                }
+            ])
             ->when($filter['statusFilter'], function ($query, $filter) {
                 return $query->whereIn('status_id', $filter);
             })
@@ -68,7 +78,17 @@ class Task extends Model
 
     public static function getFiltered($filter)
     {
-        return self::with('status', 'creator', 'assignedTo')
+        return self::with([
+                'status' => function ($query) {
+                    return $query->withTrashed();
+                },
+                'creator' => function ($query) {
+                    return $query->withTrashed();
+                },
+                'assignedTo' => function ($query) {
+                    return $query->withTrashed();
+                }
+            ])
             ->when($filter['statusFilter'], function ($query, $filter) {
                 return $query->where('status_id', $filter);
             })

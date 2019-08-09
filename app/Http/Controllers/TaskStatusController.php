@@ -96,10 +96,6 @@ class TaskStatusController extends Controller
      */
     public function destroy(TaskStatus $taskStatus)
     {
-        if (!$taskStatus->tasks->isEmpty()) {
-            return back()->with('danger', __('The task status cannot be deleted. Remove dependencies first!'));
-        }
-        
         $taskStatus->delete();
 
         return redirect()->route('task_statuses.index')->with('success', __('The task status has been deleted'));

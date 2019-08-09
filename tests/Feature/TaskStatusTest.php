@@ -88,26 +88,8 @@ class TaskStatusTest extends TestCase
         $user = $this->usersTestSet->first();
         $testStatus = $this->taskStatusesTestSet->first();
 
-        TaskStatus::find($testStatus->id)->tasks
-            ->each(function ($task, $key) {
-                $task->tags()->detach();
-                $task->delete();
-            });
-
         $this->actingAs($user)
             ->delete("/task_statuses/{$testStatus->id}");
-        $this->assertDatabaseMissing('task_statuses', ['name' => $testStatus->name]);
-    }
-
-    public function testDeleteTaskStatusesFail()
-    {
-        $user = $this->usersTestSet->first();
-        $testStatus = $this->taskStatusesTestSet->first();
-
-        $this->actingAs($user)
-            ->from("/task_statuses/{$testStatus->id}/edit")
-            ->delete("/task_statuses/{$testStatus->id}")
-            ->assertRedirect("/task_statuses/{$testStatus->id}/edit");
-        $this->assertDatabaseHas('task_statuses', ['name' => $testStatus->name]);
+        $this->assertSoftDeleted('task_statuses', ['name' => $testStatus->name]);
     }
 }
