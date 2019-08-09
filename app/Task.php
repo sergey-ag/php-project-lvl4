@@ -43,7 +43,7 @@ class Task extends Model
         return implode(', ', $tagNames);
     }
 
-    public static function getFiltered($filter)
+    public static function getFilteredMultiple($filter)
     {
         return self::with('status', 'creator', 'assignedTo')
             ->when($filter['statusFilter'], function ($query, $filter) {
@@ -62,6 +62,26 @@ class Task extends Model
                         ->when(in_array('null', $filter), function ($query) {
                             return $query->orWhereNull('assigned_to_id');
                         });
+                });
+            });
+    }
+
+    public static function getFiltered($filter)
+    {
+        return self::with('status', 'creator', 'assignedTo')
+            ->when($filter['statusFilter'], function ($query, $filter) {
+                return $query->where('status_id', $filter);
+            })
+            ->when($filter['tagFilter'], function ($query, $filter) {
+                return $query->whereHas('tags', function ($query) use ($filter) {
+                    return $query->where('tag_id', $filter);
+                });
+            })
+            ->when($filter['userFilter'], function ($query, $filter) {
+                return $query->when($filter !== 'null', function ($query) use ($filter) {
+                    return $query->where('assigned_to_id', $filter);
+                }, function ($query) {
+                    return $query->whereNull('assigned_to_id');
                 });
             });
     }

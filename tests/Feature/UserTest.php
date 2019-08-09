@@ -12,68 +12,82 @@ class UserTest extends TestCase
 {
     public function testGetUsersIndex()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
             ->get('/users')
             ->assertOk();
-        $this->assertDatabaseHas('users', ['name' => $this->usersTestSet->first()->name]);
+        $this->assertDatabaseHas('users', ['name' => $user->name]);
     }
 
     public function testGetUsersEdit()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->get('/users/edit')
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
+            ->get("/users/{$user->id}/edit")
             ->assertOk();
     }
 
     public function testPutUsers()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->from('/users/edit')
-            ->put('/users', ['name' => 'Marty McFly', 'password' => null])
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
+            ->from("/users/{$user->id}/edit")
+            ->put("/users/{$user->id}", ['name' => 'Marty McFly', 'password' => null])
             ->assertRedirect('/');
         $this->assertDatabaseHas('users', ['name' => 'Marty McFly']);
     }
 
     public function testPutUsersChangePassword()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->put('/users', [
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
+            ->put("/users/{$user->id}", [
                 'name' => 'Emmet Brown',
                 'password' => 'newpassword',
                 'password_confirmation' => 'newpassword'
             ]);
         $this->assertDatabaseMissing('users', [
-            'name' => $this->usersTestSet->first()->name,
+            'name' => $user->name,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
         ]);
     }
 
     public function testPutUsersValidationFail()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->from('/users/edit')
-            ->put('/users', ['name' => null, 'password' => null])
-            ->assertRedirect('/users/edit');
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
+            ->from("/users/{$user->id}/edit")
+            ->put("/users/{$user->id}", ['name' => null, 'password' => null])
+            ->assertRedirect("/users/{$user->id}/edit");
     }
 
     public function testDeleteUsers()
     {
-        User::find($this->usersTestSet->last()->id)->tasks
+        $user = $this->usersTestSet->last();
+        
+        User::find($user->id)->tasks
             ->each(function ($task, $key) {
                 $task->delete();
             });
 
-        $this->actingAs($this->usersTestSet->last())
-            ->delete('/users');
-        $this->assertDatabaseMissing('users', ['name' => $this->usersTestSet->last()->name]);
+        $this->actingAs($user)
+            ->delete("/users/{$user->id}");
+        $this->assertDatabaseMissing('users', ['name' => $user->name]);
     }
 
     public function testDeleteUsersFail()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->from('/users/edit')
-            ->delete('/users')
-            ->assertRedirect('/users/edit');
-        $this->assertDatabaseHas('users', ['name' => $this->usersTestSet->first()->name]);
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
+            ->from("/users/{$user->id}/edit")
+            ->delete("/users/{$user->id}")
+            ->assertRedirect("/users/{$user->id}/edit");
+        $this->assertDatabaseHas('users', ['name' => $user->name]);
     }
 }

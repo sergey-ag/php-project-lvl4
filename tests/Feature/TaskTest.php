@@ -10,37 +10,49 @@ class TaskTest extends TestCase
 {
     public function testGetTasksIndex()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+        $testTask = $this->tasksTestSet[0];
+
+        $this->actingAs($user)
             ->get('/tasks')
             ->assertOk();
-        $this->assertDatabaseHas('tasks', ['name' => $this->tasksTestSet[0]->name]);
+        $this->assertDatabaseHas('tasks', ['name' => $testTask->name]);
     }
 
     public function testGetTasksIndexWithFilter()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->get("/tasks?statusFilter[]={$this->taskStatusesTestSet->first()->id}")
+        $user = $this->usersTestSet->first();
+        $testStatus = $this->taskStatusesTestSet->first();
+        
+        $this->actingAs($user)
+            ->get("/tasks?statusFilter={$testStatus->id}")
             ->assertOk();
     }
 
     public function testGetTasksCreate()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+        
+        $this->actingAs($user)
             ->get('/tasks/create')
             ->assertOk();
     }
 
     public function testPostTasksStore()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+        $testStatus = $this->taskStatusesTestSet->first();
+        $coworker = $this->usersTestSet->last();
+        
+        $this->actingAs($user)
             ->from('/tasks/create')
             ->post('/tasks', [
                 'name' => 'NewTask',
                 'description' => 'Some text description...',
-                'status_id' => $this->taskStatusesTestSet->first()->id,
-                'creator_id' => $this->usersTestSet->first()->id,
+                'status_id' => $testStatus->id,
+                'creator_id' => $user->id,
                 'tags' => 'tag1, tag2',
-                'assigned_to_id' => $this->usersTestSet->last()->id
+                'assigned_to_id' => $coworker->id
             ])
             ->assertRedirect('/tasks');
         $this->assertDataBaseHas('tasks', ['name' => 'NewTask']);
@@ -49,36 +61,48 @@ class TaskTest extends TestCase
 
     public function testPostTasksStoreValidationFail()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+        $testStatus = $this->taskStatusesTestSet->first();
+        $coworker = $this->usersTestSet->last();
+        
+        $this->actingAs($user)
             ->from('/tasks/create')
             ->post('/tasks', [
                 'name' => null,
                 'description' => 'Some text description...',
-                'status_id' => $this->taskStatusesTestSet->first()->id,
-                'creator_id' => $this->usersTestSet->first()->id,
-                'assigned_to_id' => $this->usersTestSet->last()->id
+                'status_id' => $testStatus->id,
+                'creator_id' => $user->id,
+                'assigned_to_id' => $coworker->id
             ])
             ->assertRedirect('/tasks/create');
     }
 
     public function testGetTasksEdit()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->get("/tasks/{$this->tasksTestSet[0]->id}/edit")
+        $user = $this->usersTestSet->first();
+        $testTask = $this->tasksTestSet[0];
+        
+        $this->actingAs($user)
+            ->get("/tasks/{$testTask->id}/edit")
             ->assertOk();
     }
 
     public function testPutTasks()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->from("/tasks/{$this->tasksTestSet[0]->id}/edit")
-            ->put("/tasks/{$this->tasksTestSet[0]->id}", [
+        $user = $this->usersTestSet->first();
+        $testTask = $this->tasksTestSet[0];
+        $testStatus = $this->taskStatusesTestSet->first();
+        $coworker = $this->usersTestSet->last();
+        
+        $this->actingAs($user)
+            ->from("/tasks/{$testTask->id}/edit")
+            ->put("/tasks/{$testTask->id}", [
                 'name' => 'UpdatedTaskName',
                 'description' => 'Updated Text Descriptio...',
-                'status_id' => $this->taskStatusesTestSet->first()->id,
+                'status_id' => $testStatus->id,
                 'tags' => 'tag3',
-                'creator_id' => $this->usersTestSet->first()->id,
-                'assigned_to_id' => $this->usersTestSet->last()->id
+                'creator_id' => $user->id,
+                'assigned_to_id' => $coworker->id
             ])
             ->assertRedirect('/tasks');
         $this->assertDatabaseHas('tasks', ['name' => 'UpdatedTaskName']);
@@ -87,22 +111,30 @@ class TaskTest extends TestCase
 
     public function testPutTasksValidationFail()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->from("/tasks/{$this->tasksTestSet[0]->id}/edit")
-            ->put("/tasks/{$this->tasksTestSet[0]->id}", [
+        $user = $this->usersTestSet->first();
+        $testTask = $this->tasksTestSet[0];
+        $testStatus = $this->taskStatusesTestSet->first();
+        $coworker = $this->usersTestSet->last();
+
+        $this->actingAs($user)
+            ->from("/tasks/{$testTask->id}/edit")
+            ->put("/tasks/{$testTask->id}", [
                 'name' => null,
                 'description' => 'Updated Text Description...',
-                'status_id' => $this->taskStatusesTestSet->first()->id,
-                'creator_id' => $this->usersTestSet->first()->id,
-                'assigned_to_id' => $this->usersTestSet->last()->id
+                'status_id' => $testStatus->id,
+                'creator_id' => $user->id,
+                'assigned_to_id' => $coworker->id
             ])
-            ->assertRedirect("/tasks/{$this->tasksTestSet[0]->id}/edit");
+            ->assertRedirect("/tasks/{$testTask->id}/edit");
     }
 
     public function testDeleteTasks()
     {
-        $this->actingAs($this->usersTestSet->first())
-            ->delete("/tasks/{$this->tasksTestSet[0]->id}");
-        $this->assertDatabaseMissing('tasks', ['name' => $this->tasksTestSet[0]->name]);
+        $user = $this->usersTestSet->first();
+        $testTask = $this->tasksTestSet[0];
+
+        $this->actingAs($user)
+            ->delete("/tasks/{$testTask->id}");
+        $this->assertDatabaseMissing('tasks', ['name' => $testTask->name]);
     }
 }

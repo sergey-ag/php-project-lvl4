@@ -28,9 +28,9 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $filter = [
-            'statusFilter' => $request->input('statusFilter') ?? [],
-            'tagFilter' => $request->input('tagFilter') ?? [],
-            'userFilter' => $request->input('userFilter') ?? []
+            'statusFilter' => $request->input('statusFilter'),
+            'tagFilter' => $request->input('tagFilter'),
+            'userFilter' => $request->input('userFilter')
         ];
         
         $tasks = Task::getFiltered($filter)->paginate(10);

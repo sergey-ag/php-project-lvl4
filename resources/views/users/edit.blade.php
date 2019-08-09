@@ -10,7 +10,7 @@
                 <div class="card-header">{{ __('Edit account') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('users.update') }}">
+                    <form method="POST" action="{{ route('users.update', ['id' => auth()->user()->id]) }}">
                         @csrf
                         @method('PUT')
 

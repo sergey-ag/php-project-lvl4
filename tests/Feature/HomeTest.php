@@ -16,7 +16,9 @@ class HomeTest extends TestCase
     
     public function testGetDashboard()
     {
-        $this->actingAs($this->usersTestSet->first())
+        $user = $this->usersTestSet->first();
+
+        $this->actingAs($user)
             ->get('/')
             ->assertOk();
     }

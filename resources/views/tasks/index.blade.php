@@ -13,36 +13,39 @@
             <h4>{{ __('Filters') }}</h4>
             <form method="GET" action="{{ route('tasks.index') }}">
                 <h5>{{ __('Statuses') }}</h5>
-                @foreach ($statuses as $status)
 
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{ $status->id }}" id="statusFilter{{ $status->id }}" name="statusFilter[]"{{ (in_array($status->id, $statusFilter) ? ' checked="checked"' : '') }}>
-                    <label class="form-check-label" for="statusFilter{{ $status->id }}">{{ $status->name }}</label>
-                </div>
+                <select id="statusFilter" class="form-control" name="statusFilter">
+                    <option>
+                    @foreach ($statuses  as $status)
 
-                @endforeach
+                        <option value="{{ $status->id }}"{{ $statusFilter == $status->id ? ' selected' : '' }}>{{ $status->name }}</option>
+
+                    @endforeach
+                </select>
+
                 <h5 class="mt-3">{{ __('Users') }}</h5>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="null" id="userFilter0" name="userFilter[]"{{ (in_array('null', $userFilter) ? ' checked="checked"' : '') }}>
-                    <label class="form-check-label" for="userFilter0">{{ __('Not assigned') }}</label>
-                </div>
-                @foreach ($users as $user)
 
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{ $user->id }}" id="userFilter{{ $user->id }}" name="userFilter[]"{{ (in_array($user->id, $userFilter) ? ' checked="checked"' : '') }}>
-                    <label class="form-check-label" for="userFilter{{ $user->id }}">{{ $user->name }}</label>
-                </div>
+                <select id="userFilter" class="form-control" name="userFilter">
+                    <option>
+                    <option value="null"{{ $userFilter == 'null' ? ' selected' : '' }}>{{ __('Not assigned') }}</option>
+                    @foreach ($users  as $user)
 
-                @endforeach
+                        <option value="{{ $user->id }}"{{ $userFilter == $user->id ? ' selected' : '' }}>{{ $user->name }}</option>
+
+                    @endforeach
+                </select>
+
                 <h5 class="mt-3">{{ __('Tags') }}</h5>
-                @foreach ($tags as $tag)
 
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{ $tag->id }}" id="tagFilter{{ $tag->id }}" name="tagFilter[]"{{ (in_array($tag->id, $tagFilter) ? ' checked="checked"' : '') }}>
-                    <label class="form-check-label" for="tagFilter{{ $user->id }}">{{ $tag->name }}</label>
-                </div>
+                <select id="tagFilter" class="form-control" name="tagFilter">
+                    <option>
+                    @foreach ($tags  as $tag)
 
-                @endforeach
+                        <option value="{{ $tag->id }}"{{ $tagFilter == $tag->id ? ' selected' : '' }}>{{ $tag->name }}</option>
+
+                    @endforeach
+                </select>
+
                 <div class="form-group row my-2">
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">

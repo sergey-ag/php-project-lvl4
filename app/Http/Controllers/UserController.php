@@ -37,7 +37,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit(User $user)
     {
         return view('users.edit');
     }
@@ -48,7 +48,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -72,7 +72,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, User $user)
     {
         $user = auth()->user();
         
