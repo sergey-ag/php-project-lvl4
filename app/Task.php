@@ -16,17 +16,17 @@ class Task extends Model
 
     public function status()
     {
-        return $this->belongsTo(TaskStatus::class);
+        return $this->belongsTo(TaskStatus::class)->withTrashed();
     }
     
     public function creator()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function assignedTo()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function tags()
@@ -45,17 +45,7 @@ class Task extends Model
 
     public static function getFilteredMultiple($filter)
     {
-        return self::with([
-                'status' => function ($query) {
-                    return $query->withTrashed();
-                },
-                'creator' => function ($query) {
-                    return $query->withTrashed();
-                },
-                'assignedTo' => function ($query) {
-                    return $query->withTrashed();
-                }
-            ])
+        return self::with('status', 'creator', 'assignedTo')
             ->when($filter['statusFilter'], function ($query, $filter) {
                 return $query->whereIn('status_id', $filter);
             })
@@ -78,17 +68,7 @@ class Task extends Model
 
     public static function getFiltered($filter)
     {
-        return self::with([
-                'status' => function ($query) {
-                    return $query->withTrashed();
-                },
-                'creator' => function ($query) {
-                    return $query->withTrashed();
-                },
-                'assignedTo' => function ($query) {
-                    return $query->withTrashed();
-                }
-            ])
+        return self::with('status', 'creator', 'assignedTo')
             ->when($filter['statusFilter'], function ($query, $filter) {
                 return $query->where('status_id', $filter);
             })
