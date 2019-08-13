@@ -33,9 +33,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Save changes') }}
                                 </button>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                                <a href="{{ route('task_statuses.destroy', ['id' => $taskStatus->id]) }}" class="btn btn-danger" data-method="delete" data-confirm="Are you sure you want to delete this task status?">
                                     {{ __('Delete') }}
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -45,25 +45,4 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">{{ __('Confirmation') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <div class="modal-body">
-            {{ __('Are you sure you want to delete this task status?') }}
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
-            <a href="{{ route('task_statuses.destroy', ['id' => $taskStatus->id]) }}" class="btn btn-danger" data-method="delete">
-                {{ __('Yes, Delete it!') }}
-            </a>
-        </div>
-        </div>
-    </div>
-</div>
 @endsection

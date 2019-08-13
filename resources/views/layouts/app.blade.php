@@ -68,7 +68,9 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('users.edit', ['id' => auth()->user()->id]) }}">{{ __('Edit account') }}</a>
-                                    <button type="button" class="btn btn-link dropdown-item" data-toggle="modal" data-target="#deleteModal">{{ __('Delete account') }}</button>
+                                    <a class="dropdown-item" href="{{ route('users.destroy', ['id' => auth()->user()->id]) }}" data-method="delete" data-confirm="Are you sure you want to log out and delete your account?">
+                                        {{ __('Delete account') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}" data-method="post">{{ __('Logout') }}</a>
                                 </div>
                             </li>
@@ -82,30 +84,6 @@
             @yield('content')
         </main>
     </div>
-
-    @auth
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">{{ __('Confirmation') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            <div class="modal-body">
-                {{ __('Are you sure you want to log out and delete your account?') }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
-                <a href="{{ route('users.destroy', ['id' => auth()->user()->id]) }}" class="btn btn-danger" data-method="delete">
-                    {{ __('Yes, Delete it!') }}
-                </a>
-            </div>
-            </div>
-        </div>
-    </div>
-    @endauth
 
 </body>
 </html>
