@@ -83,7 +83,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Tags') }}</label>
 
                             <div class="col-md-6">
-                                <input id="tags" type="text" class="form-control" name="tags" value="{{ $task->getTagsAsString() }}">
+                                <input id="tags" type="text" class="form-control" name="tags" value="{{ $task->tags->implode('name', ', ') }}">
                             </div>
                         </div>
 

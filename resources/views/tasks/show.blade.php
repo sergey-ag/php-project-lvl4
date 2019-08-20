@@ -41,7 +41,7 @@
                     <div class="row">
                         <span class="col-md-4 text-md-right"><strong>{{ __('Tags') }}</strong></span>
                         <div class="col-md-6">
-                            <span>{{ $task->getTagsAsString() }}</span>
+                            <span>{{ $task->tags->implode('name', ', ') }}</span>
                         </div>
                     </div>
 

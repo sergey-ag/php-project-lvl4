@@ -29,25 +29,4 @@ class TagsTest extends TestCase
     {
         $this->assertEquals(Tag::getIds(''), []);
     }
-
-    public function testTaskGetTagsString()
-    {
-        $expected = $this->tagsTestSet
-            ->map(function ($tag, $key) {
-                return $tag->name;
-            })
-            ->toArray();
-        
-        $task = Task::find($this->tasksTestSet[0]->id);
-
-        $tagsString = $task->getTagsAsString();
-
-        $this->assertEquals(explode(', ', $tagsString), $expected);
-    }
-
-    public function testTaskGetTagsStringEmpty()
-    {
-        $task = Task::find($this->tasksTestSet[1]->id);
-        $this->assertEquals($task->getTagsAsString(), '');
-    }
 }

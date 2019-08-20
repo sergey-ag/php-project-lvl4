@@ -34,15 +34,6 @@ class Task extends Model
         return $this->belongsToMany(Tag::class, 'task_tag');
     }
 
-    public function getTagsAsString()
-    {
-        $tagNames = $this->tags->map(function ($tag, $key) {
-            return $tag->name;
-        })
-            ->toArray();
-        return implode(', ', $tagNames);
-    }
-
     public static function getFilteredMultiple($filter)
     {
         return self::with('status', 'creator', 'assignedTo')
