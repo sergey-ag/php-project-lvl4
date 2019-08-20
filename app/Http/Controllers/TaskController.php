@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Craftworks\TaskManager\TaskStatus;
 use Craftworks\TaskManager\User;
 use Craftworks\TaskManager\Tag;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Craftworks\TaskManager\Filters\FiltersTaskAssignedTo;
+use Craftworks\TaskManager\Filters\FiltersTaskTags;
 
 class TaskController extends Controller
 {
@@ -27,13 +31,14 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = [
-            'statusFilter' => $request->input('statusFilter'),
-            'tagFilter' => $request->input('tagFilter'),
-            'userFilter' => $request->input('userFilter')
-        ];
-        
-        $tasks = Task::getFiltered($filter)->paginate(10);
+        $tasks = QueryBuilder::for(Task::class)
+            ->allowedFilters([
+                AllowedFilter::exact('status_id'),
+                AllowedFilter::custom('assigned_to_id', new FiltersTaskAssignedTo),
+                AllowedFilter::custom('tags', new FiltersTaskTags)])
+            ->allowedIncludes(['status', 'creator', 'assignedTo'])
+            ->paginate(10);
+
         $users = User::orderBy('name')
             ->withTrashed()
             ->get();
@@ -47,9 +52,11 @@ class TaskController extends Controller
             'statuses' => $statuses,
             'tags' => $tags,
             'tasks' => $tasks,
-            'statusFilter' => $filter['statusFilter'],
-            'userFilter' => $filter['userFilter'],
-            'tagFilter' => $filter['tagFilter']
+            'filter' => [
+                'status_id' => $request->input('filter.status_id'),
+                'assigned_to_id' => $request->input('filter.assigned_to_id'),
+                'tags' => $request->input('filter.tags'),
+            ]
         ]);
     }
 

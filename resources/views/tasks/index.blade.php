@@ -14,34 +14,34 @@
             <form method="GET" action="{{ route('tasks.index') }}">
                 <h5>{{ __('Statuses') }}</h5>
 
-                <select id="statusFilter" class="form-control" name="statusFilter">
+                <select id="statusFilter" class="form-control" name="filter[status_id]">
                     <option>
                     @foreach ($statuses  as $status)
 
-                        <option value="{{ $status->id }}"{{ $statusFilter == $status->id ? ' selected' : '' }}>{{ $status->name }}</option>
+                        <option value="{{ $status->id }}"{{ $filter['status_id'] == $status->id ? ' selected' : '' }}>{{ $status->name }}</option>
 
                     @endforeach
                 </select>
 
                 <h5 class="mt-3">{{ __('Users') }}</h5>
 
-                <select id="userFilter" class="form-control" name="userFilter">
+                <select id="assignedToFilter" class="form-control" name="filter[assigned_to_id]">
                     <option>
-                    <option value="null"{{ $userFilter == 'null' ? ' selected' : '' }}>{{ __('Not assigned') }}</option>
+                    <option value="null"{{ $filter['assigned_to_id'] == 'null' ? ' selected' : '' }}>{{ __('Not assigned') }}</option>
                     @foreach ($users  as $user)
 
-                        <option value="{{ $user->id }}"{{ $userFilter == $user->id ? ' selected' : '' }}>{{ $user->name }}</option>
+                        <option value="{{ $user->id }}"{{ $filter['assigned_to_id'] == $user->id ? ' selected' : '' }}>{{ $user->name }}</option>
 
                     @endforeach
                 </select>
 
                 <h5 class="mt-3">{{ __('Tags') }}</h5>
 
-                <select id="tagFilter" class="form-control" name="tagFilter">
+                <select id="tagFilter" class="form-control" name="filter[tags]">
                     <option>
                     @foreach ($tags  as $tag)
 
-                        <option value="{{ $tag->id }}"{{ $tagFilter == $tag->id ? ' selected' : '' }}>{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}"{{ $filter['tags'] == $tag->id ? ' selected' : '' }}>{{ $tag->name }}</option>
 
                     @endforeach
                 </select>

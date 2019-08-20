@@ -25,7 +25,7 @@ class TaskTest extends TestCase
         $testStatus = $this->taskStatusesTestSet->first();
         
         $this->actingAs($user)
-            ->get("/tasks?statusFilter={$testStatus->id}")
+            ->get("/tasks?filter[status_id]={$testStatus->id}")
             ->assertOk();
     }
 
