@@ -1,5 +1,9 @@
 # Task Manager
 
+It's my fourth practice work after the Hexlet PHP course.
+
+Task manager is a small web application, based on Laravel framework.
+
 [Heroku](http://cw-task-manager.herokuapp.com/)
 
 [![Build Status](https://travis-ci.org/sergey-ag/php-project-lvl4.svg?branch=master)](https://travis-ci.org/sergey-ag/php-project-lvl4)
